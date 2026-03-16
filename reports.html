@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethmar Reports & Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#050e0b;color:#d8ede6;font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#050e0b}::-webkit-scrollbar-thumb{background:#1a3d2e;border-radius:2px}
+
+/* HEADER */
+#hdr{background:linear-gradient(135deg,#060f0b,#0a1a14);border-bottom:1px solid #C9A84C22;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.logo-t{color:#C9A84C;font-weight:700;font-size:14px;letter-spacing:.05em;font-family:'Cormorant Garamond',serif}
+.logo-s{color:#2d5547;font-size:8px;letter-spacing:.08em;text-transform:uppercase}
+.hbtn{background:#C9A84C18;border:1px solid #C9A84C44;border-radius:7px;padding:6px 13px;color:#C9A84C;cursor:pointer;font-weight:700;font-size:10px;font-family:inherit;transition:all .15s;white-space:nowrap}
+.hbtn:hover{background:#C9A84C33}.hbtn.on{background:#C9A84C;color:#1a0f00}
+.hbtn.green{background:#1A6B5A22;border-color:#1A6B5A55;color:#4db896}.hbtn.green:hover{background:#1A6B5A44}
+.sep{flex:1}
+.status-pill{background:#1A6B5A15;border:1px solid #1A6B5A44;border-radius:20px;padding:3px 10px;font-size:9px;color:#5a8f7a;letter-spacing:.05em}
+
+/* LAYOUT */
+#app{display:flex;flex-direction:column;min-height:100vh}
+#main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+#sb{width:240px;flex-shrink:0;border-right:1px solid #152e26;overflow-y:auto;padding:8px 6px;display:flex;flex-direction:column;gap:2px;height:calc(100vh - 56px);position:sticky;top:56px}
+.sb-lbl{font-size:9px;color:#2d5547;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:4px 6px 8px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:all .15s;font-size:11px;color:#7ab8a4;border:1px solid transparent}
+.sb-item:hover{background:#0d2018;color:#d8ede6;border-color:#1a3d2e}
+.sb-item.on{background:#0f2a1e;color:#C9A84C;border-color:#C9A84C33}
+.sb-item .icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.sb-item .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-item .cnt{background:#1A6B5A33;color:#4db896;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sb-item .cnt.gold{background:#C9A84C22;color:#C9A84C}
+.sb-divider{height:1px;background:#152e26;margin:6px 4px}
+
+/* CONTENT AREA */
+#content{flex:1;overflow-y:auto;padding:24px;height:calc(100vh - 56px)}
+
+/* SECTIONS */
+.section{display:none}.section.active{display:block}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.dash-card{background:#080f0c;border:1px solid #152e26;border-radius:10px;padding:16px;cursor:pointer;transition:all .2s}
+.dash-card:hover{border-color:#C9A84C44;background:#0a1810}
+.dash-card .dc-icon{font-size:24px;margin-bottom:8px}
+.dash-card .dc-name{font-size:11px;font-weight:600;color:#d8ede6;margin-bottom:4px}
+.dash-card .dc-role{font-size:9px;color:#4d7a69;margin-bottom:8px}
+.dash-card .dc-stats{display:flex;gap:8px}
+.dash-card .dc-stat{background:#0f1e19;border-radius:5px;padding:4px 8px;font-size:9px;color:#5a8f7a}
+.dash-card .dc-stat span{color:#C9A84C;font-weight:700}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-box{background:#080f0c;border:1px solid #152e26;border-radius:10px;padding:16px;text-align:center}
+.stat-box .sb-num{font-size:28px;font-weight:700;color:#C9A84C;font-family:'Cormorant Garamond',serif}
+.stat-box .sb-lbl2{font-size:9px;color:#4d7a69;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* CHAT VIEW */
+.chat-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #152e26}
+.chat-agent-icon{font-size:28px}
+.chat-agent-info h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:#C9A84C}
+.chat-agent-info p{font-size:10px;color:#4d7a69;margin-top:2px}
+.chat-actions{display:flex;gap:8px;margin-left:auto}
+
+.msg{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-bubble{max-width:75%;background:#0a1810;border:1px solid #152e26;border-radius:10px;padding:10px 14px;font-size:12px;line-height:1.6;color:#d8ede6}
+.msg.user .msg-bubble{background:#0d2218;border-color:#1A6B5A44;color:#c8e8d8}
+.msg-meta{font-size:9px;color:#2d5547;margin-top:4px;text-align:right}
+.msg.user .msg-meta{text-align:left}
+.msg-avatar{width:28px;height:28px;border-radius:7px;background:#0f2a1e;border:1px solid #1A6B5A33;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.msg.user .msg-avatar{background:#0a1e15;border-color:#C9A84C22}
+
+.empty-state{text-align:center;padding:60px 20px;color:#2d5547}
+.empty-state .es-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-family:'Cormorant Garamond',serif;font-size:20px;color:#4d7a69;margin-bottom:8px}
+.empty-state p{font-size:11px;line-height:1.6}
+
+/* REPORT GENERATOR */
+.rpt-form{background:#080f0c;border:1px solid #152e26;border-radius:12px;padding:20px;margin-bottom:20px}
+.rpt-form h3{font-family:'Cormorant Garamond',serif;font-size:16px;color:#C9A84C;margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:9px;color:#4d7a69;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.form-group select,.form-group input,.form-group textarea{background:#0a1810;border:1px solid #1a3d2e;border-radius:7px;padding:8px 10px;color:#d8ede6;font-family:inherit;font-size:11px;outline:none;transition:border .15s}
+.form-group select:focus,.form-group input:focus,.form-group textarea:focus{border-color:#1A6B5A88}
+.form-group select option{background:#080f0c}
+.form-group textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+.btn-row{display:flex;gap:8px;align-items:center;margin-top:16px}
+.btn-primary{background:#1A6B5A;border:1px solid #1A6B5A;border-radius:8px;padding:9px 20px;color:#fff;cursor:pointer;font-weight:600;font-size:11px;font-family:inherit;transition:all .15s}
+.btn-primary:hover{background:#1d7d68}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:#C9A84C18;border:1px solid #C9A84C44;border-radius:8px;padding:9px 16px;color:#C9A84C;cursor:pointer;font-weight:600;font-size:11px;font-family:inherit;transition:all .15s}
+.btn-secondary:hover{background:#C9A84C33}
+.btn-ghost{background:transparent;border:1px solid #1a3d2e;border-radius:8px;padding:9px 14px;color:#5a8f7a;cursor:pointer;font-weight:500;font-size:11px;font-family:inherit;transition:all .15s}
+.btn-ghost:hover{border-color:#1A6B5A55;color:#7ab8a4}
+
+/* REPORT OUTPUT */
+.report-output{background:#080f0c;border:1px solid #152e26;border-radius:12px;overflow:hidden;margin-top:16px}
+.report-output.hidden{display:none}
+.ro-header{background:linear-gradient(135deg,#0a1e17,#0d2a1e);border-bottom:1px solid #152e26;padding:14px 18px;display:flex;align-items:center;gap:10px}
+.ro-title{flex:1;font-family:'Cormorant Garamond',serif;font-size:16px;color:#C9A84C}
+.ro-body{padding:20px;font-size:12px;line-height:1.8;color:#c8e2d8;white-space:pre-wrap;max-height:500px;overflow-y:auto}
+.ro-body h1,.ro-body h2,.ro-body h3{font-family:'Cormorant Garamond',serif;color:#C9A84C;margin:12px 0 8px}
+.ro-body h1{font-size:20px}.ro-body h2{font-size:16px}.ro-body h3{font-size:14px}
+.ro-body strong{color:#d8ede6}
+.ro-body em{color:#7ab8a4}
+.ro-body ul,.ro-body ol{padding-left:18px;margin:6px 0}
+.ro-body li{margin-bottom:4px}
+
+/* TYPING */
+.typing-dot{display:inline-block;width:6px;height:6px;background:#1A6B5A;border-radius:50%;animation:bounce .8s infinite;margin:0 1px}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* SEARCH */
+.search-box{background:#080f0c;border:1px solid #1a3d2e;border-radius:8px;padding:8px 12px;color:#d8ede6;font-family:inherit;font-size:11px;outline:none;width:100%;margin-bottom:14px;transition:border .15s}
+.search-box:focus{border-color:#1A6B5A55}
+.search-box::placeholder{color:#2d5547}
+
+/* SAVED REPORTS */
+.saved-report-card{background:#080f0c;border:1px solid #152e26;border-radius:10px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.saved-report-card:hover{border-color:#C9A84C33;background:#0a1810}
+.src-icon{font-size:18px;width:32px;text-align:center}
+.src-info{flex:1;min-width:0}
+.src-title{font-size:12px;font-weight:600;color:#d8ede6;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src-meta{font-size:9px;color:#4d7a69}
+.src-actions{display:flex;gap:6px}
+
+/* ALL CHATS VIEW */
+.chat-list-item{background:#080f0c;border:1px solid #152e26;border-radius:10px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;display:flex;gap:12px;align-items:center}
+.chat-list-item:hover{border-color:#1A6B5A44;background:#0a1810}
+.cli-icon{font-size:20px;width:32px;text-align:center}
+.cli-info{flex:1}
+.cli-name{font-size:12px;font-weight:600;color:#d8ede6;margin-bottom:2px}
+.cli-preview{font-size:10px;color:#4d7a69;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cli-stats{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.cli-count{background:#1A6B5A22;color:#4db896;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px}
+.cli-date{font-size:9px;color:#2d5547}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:#00000088;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.hidden{display:none}
+.modal{background:#080f0c;border:1px solid #1A6B5A44;border-radius:14px;width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-hdr{background:linear-gradient(135deg,#0a1e17,#0d2a1e);border-bottom:1px solid #152e26;padding:16px 20px;display:flex;align-items:center;gap:10px}
+.modal-hdr h3{font-family:'Cormorant Garamond',serif;font-size:18px;color:#C9A84C;flex:1}
+.modal-body{padding:20px;overflow-y:auto;flex:1;font-size:12px;line-height:1.8;color:#c8e2d8;white-space:pre-wrap}
+.modal-body h1,.modal-body h2,.modal-body h3{font-family:'Cormorant Garamond',serif;color:#C9A84C;margin:12px 0 8px}
+.modal-body h1{font-size:22px}.modal-body h2{font-size:18px}.modal-body h3{font-size:14px}
+.modal-body strong{color:#d8ede6}.modal-body em{color:#7ab8a4}
+.modal-body ul,.modal-body ol{padding-left:18px;margin:6px 0}.modal-body li{margin-bottom:4px}
+.modal-footer{border-top:1px solid #152e26;padding:12px 20px;display:flex;gap:8px;justify-content:flex-end}
+
+/* SECTION HEADERS */
+.sec-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.sec-header h2{font-family:'Cormorant Garamond',serif;font-size:22px;color:#C9A84C;flex:1}
+.sec-header p{font-size:10px;color:#4d7a69;margin-top:2px}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;background:#1A6B5A15;border:1px solid #1A6B5A33;border-radius:20px;padding:2px 8px;font-size:9px;color:#4db896;margin:2px}
+.tag.gold{background:#C9A84C15;border-color:#C9A84C33;color:#C9A84C}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:#0f2a1e;border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;background:#1A6B5A;border-radius:3px;transition:width .3s}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:#050e0b;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#loading.hidden{display:none}
+.loader-logo{font-family:'Cormorant Garamond',serif;font-size:24px;color:#C9A84C;letter-spacing:.1em}
+.loader-sub{font-size:10px;color:#2d5547;letter-spacing:.1em;text-transform:uppercase}
+.loader-bar{width:200px;height:2px;background:#152e26;border-radius:2px;overflow:hidden}
+.loader-fill{height:100%;background:#C9A84C;border-radius:2px;animation:load 2s ease-in-out infinite}
+@keyframes load{0%{width:0;margin-left:0}50%{width:60%;margin-left:0}100%{width:0;margin-left:100%}}
+
+/* KEY SETUP */
+.key-setup{background:#080f0c;border:1px solid #C9A84C33;border-radius:12px;padding:24px;max-width:480px;margin:40px auto}
+.key-setup h3{font-family:'Cormorant Garamond',serif;font-size:18px;color:#C9A84C;margin-bottom:6px}
+.key-setup p{font-size:11px;color:#4d7a69;margin-bottom:20px;line-height:1.6}
+
+/* INLINE MARKDOWN RENDER */
+.rendered p{margin-bottom:8px}
+
+/* MOBILE */
+@media(max-width:768px){
+  #sb{display:none}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .form-row.triple{grid-template-columns:1fr}
+  #content{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loader-logo">ETHMAR</div>
+  <div class="loader-sub">Reports & Intelligence Hub</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div id="load-status" style="font-size:9px;color:#2d5547;margin-top:8px">Loading conversations…</div>
+</div>
+
+<div id="app" style="display:none">
+<!-- HEADER -->
+<div id="hdr">
+  <div>
+    <div class="logo-t">ETHMAR</div>
+    <div class="logo-s">Reports & Intelligence Hub</div>
+  </div>
+  <div class="sep"></div>
+  <span class="status-pill" id="conn-status">⚪ Connecting…</span>
+  <button class="hbtn green" onclick="refreshData()">↻ Refresh</button>
+  <button class="hbtn" onclick="showSection('generate')">+ Generate Report</button>
+  <a href="index.html" class="hbtn" style="text-decoration:none">← Chat App</a>
+</div>
+
+<div id="main">
+<!-- SIDEBAR -->
+<div id="sb">
+  <div class="sb-lbl">Overview</div>
+  <div class="sb-item on" data-section="dashboard" onclick="showSection('dashboard')">
+    <span class="icon">🏠</span><span class="name">Dashboard</span>
+  </div>
+  <div class="sb-item" data-section="allchats" onclick="showSection('allchats')">
+    <span class="icon">💬</span><span class="name">All Chats</span><span class="cnt" id="total-cnt">0</span>
+  </div>
+  <div class="sb-item" data-section="generate" onclick="showSection('generate')">
+    <span class="icon">⚡</span><span class="name">Generate Report</span>
+  </div>
+  <div class="sb-item" data-section="saved" onclick="showSection('saved')">
+    <span class="icon">📁</span><span class="name">Saved Reports</span><span class="cnt gold" id="saved-cnt">0</span>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Executives</div>
+  <div id="agent-nav"></div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Settings</div>
+  <div class="sb-item" data-section="settings" onclick="showSection('settings')">
+    <span class="icon">⚙️</span><span class="name">API Keys</span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="content">
+
+  <!-- DASHBOARD -->
+  <div id="sec-dashboard" class="section active">
+    <div class="sec-header">
+      <div><h2>Executive Intelligence Dashboard</h2><p id="dash-subtitle">Loading conversation data…</p></div>
+      <button class="btn-secondary" onclick="generateAllReports()">⚡ Generate All Reports</button>
+    </div>
+    <div class="stats-row" id="stats-row">
+      <div class="stat-box"><div class="sb-num" id="stat-total">—</div><div class="sb-lbl2">Total Messages</div></div>
+      <div class="stat-box"><div class="sb-num" id="stat-agents">—</div><div class="sb-lbl2">Active Executives</div></div>
+      <div class="stat-box"><div class="sb-num" id="stat-topics">—</div><div class="sb-lbl2">Conversations</div></div>
+      <div class="stat-box"><div class="sb-num" id="stat-reports">—</div><div class="sb-lbl2">Saved Reports</div></div>
+    </div>
+    <div class="dash-grid" id="dash-grid">
+      <div class="empty-state" style="grid-column:1/-1"><div class="es-icon">⏳</div><h3>Loading…</h3></div>
+    </div>
+  </div>
+
+  <!-- ALL CHATS -->
+  <div id="sec-allchats" class="section">
+    <div class="sec-header">
+      <div><h2>All Conversations</h2><p>Complete conversation history across all executives</p></div>
+    </div>
+    <input type="text" class="search-box" id="chat-search" placeholder="Search conversations…" oninput="filterChats(this.value)">
+    <div id="chat-list"></div>
+  </div>
+
+  <!-- INDIVIDUAL CHAT VIEW -->
+  <div id="sec-chat" class="section">
+    <div class="chat-header" id="chat-view-header">
+      <div class="chat-agent-icon" id="cv-icon">💬</div>
+      <div class="chat-agent-info">
+        <h2 id="cv-name">Conversation</h2>
+        <p id="cv-meta">Loading…</p>
+      </div>
+      <div class="chat-actions">
+        <button class="btn-ghost" onclick="showSection('allchats')">← Back</button>
+        <button class="btn-secondary" onclick="generateReportFromChat()">⚡ Generate Report</button>
+        <button class="hbtn green" onclick="exportChatHTML()">↓ Export HTML</button>
+      </div>
+    </div>
+    <div id="chat-messages"></div>
+  </div>
+
+  <!-- GENERATE REPORT -->
+  <div id="sec-generate" class="section">
+    <div class="sec-header">
+      <div><h2>Report Generator</h2><p>AI-powered reports from your executive conversations</p></div>
+    </div>
+
+    <div class="rpt-form">
+      <h3>📋 Configure Report</h3>
+      <div class="form-row triple">
+        <div class="form-group">
+          <label>Report Type</label>
+          <select id="rpt-type">
+            <option value="executive_summary">Executive Summary</option>
+            <option value="action_items">Action Items & Decisions</option>
+            <option value="strategic_brief">Strategic Brief</option>
+            <option value="financial_brief">Financial Overview</option>
+            <option value="operations_update">Operations Update</option>
+            <option value="market_intelligence">Market Intelligence</option>
+            <option value="risk_register">Risk Register</option>
+            <option value="leadership_minutes">Leadership Meeting Minutes</option>
+            <option value="cross_functional">Cross-Functional Insights</option>
+            <option value="custom">Custom Report</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <select id="rpt-source">
+            <option value="all">All Executives</option>
+            <option value="cso">♟ Chief Strategy Officer</option>
+            <option value="cfo">💹 Chief Financial Officer</option>
+            <option value="coo">⚙️ Chief Operations Officer</option>
+            <option value="cmo">📣 Chief Marketing Officer</option>
+            <option value="analytics">📊 Head of Data Analytics</option>
+            <option value="product">🏭 Head of Product Development</option>
+            <option value="agronomy">🌾 Head of Agronomy</option>
+            <option value="it">💻 Head of IT</option>
+            <option value="bizdev">🤝 Head of Business Development</option>
+            <option value="pm">📋 Head of Project Management</option>
+            <option value="legal">⚖️ Head of Legal</option>
+            <option value="admin">🗂️ CEO Office Manager & Admin</option>
+            <option value="leadership">👥 Leadership Meeting</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Format</label>
+          <select id="rpt-format">
+            <option value="structured">Structured (Headers + Bullets)</option>
+            <option value="memo">Executive Memo</option>
+            <option value="briefing">One-Page Briefing</option>
+            <option value="narrative">Narrative Prose</option>
+            <option value="dashboard">Dashboard Format</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Language</label>
+          <select id="rpt-lang">
+            <option value="english">English</option>
+            <option value="arabic">Arabic</option>
+            <option value="bilingual">Bilingual (EN + AR)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date Range</label>
+          <select id="rpt-date">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">Last 7 Days</option>
+            <option value="month">Last 30 Days</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Additional Instructions (optional)</label>
+        <textarea id="rpt-instructions" placeholder="E.g., Focus on capital injection options, Highlight Sudan farm challenges, Include competitive positioning vs OLAM…"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="gen-btn" onclick="generateReport()">⚡ Generate Report</button>
+        <button class="btn-ghost" onclick="document.getElementById('rpt-instructions').value=''">Clear</button>
+        <span id="gen-status" style="font-size:10px;color:#4d7a69;margin-left:8px"></span>
+      </div>
+    </div>
+
+    <div class="report-output hidden" id="report-output">
+      <div class="ro-header">
+        <span id="ro-icon">📄</span>
+        <div class="ro-title" id="ro-title">Report</div>
+        <button class="hbtn green" onclick="saveReport()">💾 Save</button>
+        <button class="hbtn" onclick="exportReportHTML()">↓ HTML</button>
+        <button class="hbtn" onclick="copyReport()">⎘ Copy</button>
+      </div>
+      <div class="ro-body rendered" id="ro-body"></div>
+    </div>
+  </div>
+
+  <!-- SAVED REPORTS -->
+  <div id="sec-saved" class="section">
+    <div class="sec-header">
+      <div><h2>Saved Reports</h2><p>Your generated intelligence reports</p></div>
+      <button class="hbtn green" onclick="exportAllReportsHTML()">↓ Export All HTML</button>
+    </div>
+    <div id="saved-list">
+      <div class="empty-state"><div class="es-icon">📁</div><h3>No saved reports yet</h3><p>Generate a report and save it to access it here.</p></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="sec-settings" class="section">
+    <div class="sec-header">
+      <div><h2>API Configuration</h2><p>Manage your API keys</p></div>
+    </div>
+    <div class="key-setup">
+      <h3>🔑 API Keys</h3>
+      <p>Keys are stored in your browser only and never sent to any server except the respective AI provider.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="form-group">
+          <label>Claude API Key (for report generation)</label>
+          <input type="password" id="key-claude" placeholder="sk-ant-api…" value="">
+        </div>
+        <div class="form-group">
+          <label>Supabase Anon Key (for loading chats)</label>
+          <input type="password" id="key-sb" placeholder="eyJ…" value="">
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="saveKeys()">Save Keys</button>
+          <button class="btn-ghost" onclick="clearKeys()">Clear All</button>
+        </div>
+        <div id="key-status" style="font-size:10px;color:#4d7a69;margin-top:4px"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL for viewing saved reports -->
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Report</h3>
+      <button class="hbtn green" onclick="exportModalHTML()">↓ HTML</button>
+      <button class="hbtn" onclick="copyModal()">⎘ Copy</button>
+      <button class="btn-ghost" style="padding:5px 10px" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body rendered" id="modal-body"></div>
+    <div class="modal-footer">
+      <span id="modal-meta" style="font-size:9px;color:#4d7a69;flex:1"></span>
+      <button class="btn-ghost" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONSTANTS ──────────────────────────────────────────────────────────────
+const SB_URL = 'https://xkaqbkgtptzsbvnpmpzc.supabase.co';
+const BIZ = 'Nazim Khalil — CEO of Ethmar (ADGM Abu Dhabi), MD Alliance Food Security (Dubai), Board Straton (Mauritius), Corp Dev Invictus/Dal Group. 200,000+ acre farms Sudan/Egypt. Date brands: Fenti (premium Medjool), Noka, Nawa, Capo. Feed: alfalfa pellets, wheat bran, mixed fodder. Crops: wheat, sorghum. Markets: ME, East Africa, Far East, Europe, S.America. Competitors: OLAM, Dahra, Elite Agro, Israeli date cos. Goal: largest agri-food holding in MEA. Challenge: multi-year losses, urgent restructuring + capital injection. Systems: SAP, Monday.com, Things 3, BI dashboards.';
+
+const AGENTS = [
+  {id:'cso',icon:'♟',title:'Chief Strategy Officer',short:'CSO'},
+  {id:'cfo',icon:'💹',title:'Chief Financial Officer',short:'CFO'},
+  {id:'coo',icon:'⚙️',title:'Chief Operations Officer',short:'COO'},
+  {id:'cmo',icon:'📣',title:'Chief Marketing Officer',short:'CMO'},
+  {id:'analytics',icon:'📊',title:'Head of Data Analytics',short:'Analytics'},
+  {id:'product',icon:'🏭',title:'Head of Product Development',short:'Product'},
+  {id:'agronomy',icon:'🌾',title:'Head of Agronomy',short:'Agronomy'},
+  {id:'it',icon:'💻',title:'Head of IT',short:'IT'},
+  {id:'bizdev',icon:'🤝',title:'Head of Business Development',short:'BizDev'},
+  {id:'pm',icon:'📋',title:'Head of Project Management',short:'PM'},
+  {id:'legal',icon:'⚖️',title:'Head of Legal',short:'Legal'},
+  {id:'admin',icon:'🗂️',title:'CEO Office Manager & Admin',short:'Admin'},
+  {id:'leadership',icon:'👥',title:'Leadership Meeting',short:'LM'}
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let KEYS = {
+  claude: localStorage.getItem('ethmar_claude_key') || '',
+  sbKey:  localStorage.getItem('ethmar_sb_key') || ''
+};
+let allConvos = [];       // raw rows from supabase
+let histsByAgent = {};    // grouped by agent_id
+let savedReports = JSON.parse(localStorage.getItem('ethmar_reports') || '[]');
+let currentAgent = null;  // active agent for chat view
+let lastReport = null;    // last generated report
+let currentModalReport = null;
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  document.getElementById('key-claude').value = KEYS.claude;
+  document.getElementById('key-sb').value = KEYS.sbKey;
+  buildAgentNav();
+  updateSavedCount();
+  if (!KEYS.sbKey) {
+    setLoadStatus('No Supabase key — please set keys in Settings');
+    setTimeout(finishLoad, 1500);
+    return;
+  }
+  await loadConversations();
+  finishLoad();
+}
+
+function finishLoad() {
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').style.flexDirection = 'column';
+  renderDashboard();
+  renderChatList();
+}
+
+function setLoadStatus(msg) {
+  document.getElementById('load-status').textContent = msg;
+}
+
+// ─── SUPABASE ─────────────────────────────────────────────────────────────────
+async function loadConversations() {
+  try {
+    setLoadStatus('Fetching conversations…');
+    const r = await fetch(SB_URL + '/rest/v1/conversations?order=created_at.asc&limit=500', {
+      headers: { 'apikey': KEYS.sbKey, 'Authorization': 'Bearer ' + KEYS.sbKey }
+    });
+    if (!r.ok) {
+      setLoadStatus('Connection failed — check your Supabase key');
+      document.getElementById('conn-status').textContent = '🔴 Disconnected';
+      document.getElementById('conn-status').style.color = '#c94c4c';
+      return;
+    }
+    const data = await r.json();
+    if (!Array.isArray(data)) { setLoadStatus('Invalid response from Supabase'); return; }
+    allConvos = data;
+    histsByAgent = {};
+    data.forEach(row => {
+      if (!histsByAgent[row.agent_id]) histsByAgent[row.agent_id] = [];
+      histsByAgent[row.agent_id].push(row);
+    });
+    setLoadStatus('Loaded ' + data.length + ' messages');
+    document.getElementById('conn-status').textContent = '🟢 ' + data.length + ' messages';
+    document.getElementById('conn-status').style.color = '#4db896';
+    document.getElementById('total-cnt').textContent = data.length;
+  } catch(e) {
+    setLoadStatus('Error: ' + e.message);
+    document.getElementById('conn-status').textContent = '🔴 Error';
+  }
+}
+
+async function refreshData() {
+  document.getElementById('conn-status').textContent = '⟳ Refreshing…';
+  await loadConversations();
+  renderDashboard();
+  renderChatList();
+  if (currentAgent) viewChat(currentAgent);
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const total = allConvos.length;
+  const activeAgents = Object.keys(histsByAgent).length;
+  const convoCount = Math.round(total / 2) || 0;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-agents').textContent = activeAgents;
+  document.getElementById('stat-topics').textContent = convoCount;
+  document.getElementById('stat-reports').textContent = savedReports.length;
+  document.getElementById('dash-subtitle').textContent =
+    total + ' messages across ' + activeAgents + ' executives · ' + new Date().toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  const grid = document.getElementById('dash-grid');
+  if (!total) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">💬</div><h3>No conversations yet</h3><p>Start chatting with executives in the main app, then come back to generate reports.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = AGENTS.map(a => {
+    const msgs = histsByAgent[a.id] || [];
+    const userMsgs = msgs.filter(m => m.role === 'user').length;
+    const aiMsgs = msgs.filter(m => m.role === 'assistant').length;
+    if (!msgs.length) return `
+      <div class="dash-card" style="opacity:.4;cursor:default" title="No conversations yet">
+        <div class="dc-icon">${a.icon}</div>
+        <div class="dc-name">${a.short}</div>
+        <div class="dc-role">${a.title}</div>
+        <div class="dc-stats"><div class="dc-stat">No messages</div></div>
+      </div>`;
+    return `
+      <div class="dash-card" onclick="viewChat('${a.id}')">
+        <div class="dc-icon">${a.icon}</div>
+        <div class="dc-name">${a.short}</div>
+        <div class="dc-role">${a.title}</div>
+        <div class="dc-stats">
+          <div class="dc-stat"><span>${userMsgs}</span> questions</div>
+          <div class="dc-stat"><span>${aiMsgs}</span> replies</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,msgs.length*5)}%"></div></div>
+      </div>`;
+  }).join('');
+}
+
+// ─── SIDEBAR NAV ──────────────────────────────────────────────────────────────
+function buildAgentNav() {
+  const nav = document.getElementById('agent-nav');
+  nav.innerHTML = AGENTS.map(a => `
+    <div class="sb-item" data-section="chat-${a.id}" onclick="viewChat('${a.id}')">
+      <span class="icon">${a.icon}</span>
+      <span class="name">${a.short}</span>
+      <span class="cnt" id="nav-cnt-${a.id}">0</span>
+    </div>`).join('');
+}
+
+function updateNavCounts() {
+  AGENTS.forEach(a => {
+    const el = document.getElementById('nav-cnt-' + a.id);
+    if (el) el.textContent = (histsByAgent[a.id] || []).length;
+  });
+}
+
+// ─── CHAT LIST ────────────────────────────────────────────────────────────────
+function renderChatList(filter = '') {
+  updateNavCounts();
+  const list = document.getElementById('chat-list');
+  const agentsWithChats = AGENTS.filter(a => (histsByAgent[a.id] || []).length > 0);
+  if (!agentsWithChats.length) {
+    list.innerHTML = '<div class="empty-state"><div class="es-icon">💬</div><h3>No conversations found</h3><p>Chat with executives first, then refresh.</p></div>';
+    return;
+  }
+  const filtered = agentsWithChats.filter(a => {
+    if (!filter) return true;
+    const msgs = histsByAgent[a.id] || [];
+    return a.title.toLowerCase().includes(filter.toLowerCase()) ||
+      msgs.some(m => String(m.content || '').toLowerCase().includes(filter.toLowerCase()));
+  });
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state"><div class="es-icon">🔍</div><h3>No matches</h3><p>Try a different search term.</p></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(a => {
+    const msgs = histsByAgent[a.id] || [];
+    const last = msgs[msgs.length - 1];
+    const preview = last ? String(last.content || '').substring(0, 80) + '…' : 'No messages';
+    const lastDate = last && last.created_at ? new Date(last.created_at).toLocaleDateString('en-GB') : '';
+    return `
+      <div class="chat-list-item" onclick="viewChat('${a.id}')">
+        <div class="cli-icon">${a.icon}</div>
+        <div class="cli-info">
+          <div class="cli-name">${a.title}</div>
+          <div class="cli-preview">${escHtml(preview)}</div>
+        </div>
+        <div class="cli-stats">
+          <div class="cli-count">${msgs.length} msgs</div>
+          <div class="cli-date">${lastDate}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function filterChats(val) { renderChatList(val); }
+
+// ─── CHAT VIEW ────────────────────────────────────────────────────────────────
+function viewChat(agentId) {
+  currentAgent = agentId;
+  const agent = AGENTS.find(a => a.id === agentId);
+  const msgs = histsByAgent[agentId] || [];
+
+  document.getElementById('cv-icon').textContent = agent ? agent.icon : '💬';
+  document.getElementById('cv-name').textContent = agent ? agent.title : agentId;
+  document.getElementById('cv-meta').textContent = msgs.length + ' messages' +
+    (msgs[0] && msgs[0].created_at ? ' · Started ' + new Date(msgs[0].created_at).toLocaleString('en-GB') : '');
+
+  const container = document.getElementById('chat-messages');
+  if (!msgs.length) {
+    container.innerHTML = '<div class="empty-state"><div class="es-icon">💬</div><h3>No messages yet</h3><p>Chat with this executive first.</p></div>';
+  } else {
+    container.innerHTML = msgs.map(m => {
+      const isUser = m.role === 'user';
+      const time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) : '';
+      const date = m.created_at ? new Date(m.created_at).toLocaleDateString('en-GB') : '';
+      return `
+        <div class="msg ${isUser ? 'user' : 'assistant'}">
+          <div class="msg-avatar">${isUser ? '👤' : (agent ? agent.icon : '🤖')}</div>
+          <div>
+            <div class="msg-bubble">${renderMd(escHtml(String(m.content || '')))}</div>
+            <div class="msg-meta">${date} ${time}${m.ai_model ? ' · ' + m.ai_model : ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // Pre-fill generate form
+  document.getElementById('rpt-source').value = agentId;
+  showSection('chat');
+}
+
+function generateReportFromChat() {
+  document.getElementById('rpt-source').value = currentAgent || 'all';
+  showSection('generate');
+}
+
+// ─── REPORT GENERATION ────────────────────────────────────────────────────────
+const REPORT_PROMPTS = {
+  executive_summary: `Create a comprehensive Executive Summary for Nazim Khalil (CEO). Structure: 1) KEY DISCUSSIONS - what was discussed, 2) DECISIONS MADE - any clear decisions or recommendations, 3) OPEN ITEMS - unresolved questions, 4) ACTION ITEMS - specific next steps with owner, 5) STRATEGIC INSIGHTS - key takeaways. Be specific and factual — only report what was actually discussed.`,
+  action_items: `Extract ALL action items, decisions, and commitments from these conversations. Format as: ✅ DECISIONS MADE, 📌 ACTION ITEMS (with owner if mentioned), ⏰ DEADLINES/TIMELINES mentioned, ❓ PENDING QUESTIONS. Be exhaustive — don't miss anything actionable.`,
+  strategic_brief: `Produce a Strategic Brief covering: 1) STRATEGIC TOPICS discussed, 2) COMPETITIVE INTELLIGENCE mentioned (OLAM, Dahra, Elite Agro, Israeli dates), 3) GROWTH OPPORTUNITIES identified, 4) RISKS flagged, 5) RECOMMENDED PRIORITIES for Nazim. Ground every point in actual conversation content.`,
+  financial_brief: `Produce a Financial Overview covering: 1) FINANCIAL ISSUES discussed, 2) NUMBERS/DATA mentioned (revenue, costs, losses, targets), 3) CAPITAL & FUNDING topics, 4) CASH FLOW concerns, 5) RESTRUCTURING considerations. Only include what was actually discussed — flag where data is needed.`,
+  operations_update: `Produce an Operations Update covering: 1) FARM OPERATIONS topics (Sudan/Egypt), 2) SUPPLY CHAIN & LOGISTICS issues, 3) PROCESSING & PRODUCTION topics, 4) PEOPLE/TEAMS matters, 5) SYSTEMS (SAP, Monday.com) topics. Report facts from conversations only.`,
+  market_intelligence: `Extract all Market Intelligence from these conversations: 1) MARKET OPPORTUNITIES discussed, 2) COMPETITOR INTELLIGENCE (OLAM, Dahra, Elite Agro), 3) CUSTOMER/CHANNEL insights, 4) BRAND mentions (Fenti, Noka, Nawa, Capo), 5) PRICING & DEMAND signals.`,
+  risk_register: `Create a Risk Register from conversation content: For each risk identified, note: Risk Description | Category (Financial/Operational/Market/Legal/People) | Severity (High/Medium/Low) | Owner (if mentioned) | Mitigation discussed (if any). Format as a clear table or list.`,
+  leadership_minutes: `Produce formal Leadership Meeting Minutes: 1) ATTENDEES (executives who contributed), 2) AGENDA ITEMS discussed, 3) KEY DISCUSSIONS per topic, 4) DECISIONS REACHED, 5) ACTION ITEMS with owners, 6) NEXT STEPS. Professional board-ready format.`,
+  cross_functional: `Identify Cross-Functional Insights across all executives: 1) ALIGNMENT — where executives agree, 2) TENSIONS — where priorities conflict, 3) DEPENDENCIES — where teams need each other, 4) GAPS — important topics not yet covered, 5) SYNTHESIS — the single most important thing Nazim should focus on based on all conversations.`,
+  custom: `Analyze the conversation data below and produce a detailed, actionable report based on the additional instructions provided. Be specific, reference actual content from the conversations, and structure the output clearly.`
+};
+
+async function generateReport() {
+  if (!KEYS.claude) { alert('Please set your Claude API key in Settings first.'); showSection('settings'); return; }
+
+  const type = document.getElementById('rpt-type').value;
+  const source = document.getElementById('rpt-source').value;
+  const format = document.getElementById('rpt-format').value;
+  const lang = document.getElementById('rpt-lang').value;
+  const dateFilter = document.getElementById('rpt-date').value;
+  const instructions = document.getElementById('rpt-instructions').value;
+
+  // Gather conversation data
+  let convData = [];
+  if (source === 'all') {
+    AGENTS.forEach(a => { convData.push(...(histsByAgent[a.id] || [])); });
+  } else {
+    convData = histsByAgent[source] || [];
+  }
+
+  // Date filter
+  if (dateFilter !== 'all') {
+    const now = new Date();
+    const cutoff = new Date(now);
+    if (dateFilter === 'today') cutoff.setHours(0,0,0,0);
+    else if (dateFilter === 'week') cutoff.setDate(now.getDate() - 7);
+    else if (dateFilter === 'month') cutoff.setDate(now.getDate() - 30);
+    convData = convData.filter(m => m.created_at && new Date(m.created_at) >= cutoff);
+  }
+
+  if (!convData.length) { alert('No conversations found for the selected filters.'); return; }
+
+  // Build conversation text
+  const agentMeta = source === 'all' ? 'All Executives' : (AGENTS.find(a => a.id === source)?.title || source);
+  let convoText = convData.map(m => {
+    const agent = AGENTS.find(a => a.id === m.agent_id);
+    const agentName = agent ? agent.title : m.agent_id;
+    const time = m.created_at ? new Date(m.created_at).toLocaleString('en-GB') : '';
+    return `[${time}] ${m.role === 'user' ? 'Nazim' : agentName}: ${String(m.content || '').substring(0, 800)}`;
+  }).join('\n\n');
+
+  // Format instructions
+  const formatInstructions = {
+    structured: 'Use clear headers (##), bullet points, and numbered lists. Well-structured for executive reading.',
+    memo: 'Format as a professional executive memo with TO, FROM, DATE, RE fields at top, then body paragraphs.',
+    briefing: 'Condense to a single-page briefing. Use a summary box at top, then key points only. No fluff.',
+    narrative: 'Write in flowing narrative prose, like a management consultant briefing. Avoid bullet points.',
+    dashboard: 'Format as a dashboard-style report: use symbols (✅❌⚠️📈📉), metrics, and at-a-glance data.'
+  };
+
+  const langInstructions = {
+    english: 'Write entirely in English.',
+    arabic: 'Write entirely in Arabic (Modern Standard Arabic). Use RTL formatting conventions.',
+    bilingual: 'Write each section first in English, then immediately in Arabic below it. Label sections with both languages.'
+  };
+
+  const systemPrompt = `You are the Chief Intelligence Officer for Ethmar, preparing executive reports for CEO Nazim Khalil.
+
+COMPANY CONTEXT: ${BIZ}
+
+YOUR TASK: Analyze real conversation logs between Nazim and his AI executive team, then produce a high-quality ${agentMeta} report.
+
+REPORT TYPE: ${REPORT_PROMPTS[type] || REPORT_PROMPTS.executive_summary}
+
+OUTPUT FORMAT: ${formatInstructions[format] || formatInstructions.structured}
+
+LANGUAGE: ${langInstructions[lang] || langInstructions.english}
+
+CRITICAL RULES:
+- Only report what was ACTUALLY discussed in the conversations
+- Never invent data, numbers, or decisions not in the source
+- Flag clearly when important information is missing
+- Every recommendation must trace to conversation evidence
+- Be specific about Ethmar's actual situation, brands, markets, and challenges
+${instructions ? `\nADDITIONAL INSTRUCTIONS: ${instructions}` : ''}`;
+
+  const userMsg = `Here are the conversation logs (${convData.length} messages from ${agentMeta}):\n\n${convoText}\n\nProduce the report now.`;
+
+  // UI state
+  const btn = document.getElementById('gen-btn');
+  const status = document.getElementById('gen-status');
+  btn.disabled = true; btn.textContent = '⏳ Generating…';
+  status.textContent = 'Calling Claude AI…';
+
+  const output = document.getElementById('report-output');
+  output.classList.remove('hidden');
+  const body = document.getElementById('ro-body');
+  body.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+
+  const typeLabel = document.getElementById('rpt-type').options[document.getElementById('rpt-type').selectedIndex].text;
+  document.getElementById('ro-title').textContent = typeLabel + ' — ' + agentMeta + ' — ' + new Date().toLocaleDateString('en-GB');
+  document.getElementById('ro-icon').textContent = AGENTS.find(a => a.id === source)?.icon || '📄';
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': KEYS.claude,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 3000,
+        messages: [{ role: 'user', content: systemPrompt + '\n\n' + userMsg }]
+      })
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.error?.message || r.status); }
+    const d = await r.json();
+    const text = d.content?.[0]?.text || '';
+    body.innerHTML = renderMd(escHtml(text));
+    lastReport = { type: typeLabel, source: agentMeta, content: text, date: new Date().toISOString(), icon: document.getElementById('ro-icon').textContent };
+    status.textContent = '✅ Report generated (' + text.length + ' chars)';
+  } catch(e) {
+    body.innerHTML = '<span style="color:#c97a4c">Error: ' + escHtml(e.message) + '</span>';
+    status.textContent = '❌ Failed';
+  }
+  btn.disabled = false; btn.textContent = '⚡ Generate Report';
+}
+
+async function generateAllReports() {
+  if (!KEYS.claude) { alert('Please set your Claude API key in Settings first.'); showSection('settings'); return; }
+  const active = AGENTS.filter(a => (histsByAgent[a.id] || []).length > 0);
+  if (!active.length) { alert('No conversations to report on yet.'); return; }
+  if (!confirm('Generate Executive Summary reports for all ' + active.length + ' active executives? This will use multiple API calls.')) return;
+  showSection('generate');
+  for (const agent of active) {
+    document.getElementById('rpt-source').value = agent.id;
+    document.getElementById('rpt-type').value = 'executive_summary';
+    document.getElementById('rpt-format').value = 'structured';
+    document.getElementById('gen-status').textContent = 'Generating: ' + agent.title + '…';
+    await generateReport();
+    if (lastReport) { saveReport(); }
+    await new Promise(r => setTimeout(r, 1000)); // Brief pause between calls
+  }
+  document.getElementById('gen-status').textContent = '✅ All reports generated and saved!';
+  renderSaved();
+  showSection('saved');
+}
+
+// ─── SAVE / EXPORT ────────────────────────────────────────────────────────────
+function saveReport() {
+  if (!lastReport) { alert('No report to save yet.'); return; }
+  const rpt = { ...lastReport, id: Date.now() };
+  savedReports.unshift(rpt);
+  if (savedReports.length > 50) savedReports = savedReports.slice(0, 50);
+  localStorage.setItem('ethmar_reports', JSON.stringify(savedReports));
+  updateSavedCount();
+  renderSaved();
+  document.getElementById('gen-status').textContent = '💾 Saved!';
+  setTimeout(() => document.getElementById('gen-status').textContent = '', 2000);
+}
+
+function updateSavedCount() {
+  document.getElementById('saved-cnt').textContent = savedReports.length;
+  document.getElementById('stat-reports').textContent = savedReports.length;
+}
+
+function renderSaved() {
+  updateSavedCount();
+  const list = document.getElementById('saved-list');
+  if (!savedReports.length) {
+    list.innerHTML = '<div class="empty-state"><div class="es-icon">📁</div><h3>No saved reports yet</h3><p>Generate a report and save it.</p></div>';
+    return;
+  }
+  list.innerHTML = savedReports.map((r, i) => `
+    <div class="saved-report-card" onclick="viewReport(${i})">
+      <div class="src-icon">${r.icon || '📄'}</div>
+      <div class="src-info">
+        <div class="src-title">${escHtml(r.type)} — ${escHtml(r.source)}</div>
+        <div class="src-meta">${new Date(r.date).toLocaleString('en-GB')} · ${r.content.length} chars</div>
+      </div>
+      <div class="src-actions">
+        <button class="hbtn green" onclick="event.stopPropagation();exportSavedHTML(${i})">↓ HTML</button>
+        <button class="btn-ghost" style="padding:5px 10px;font-size:10px" onclick="event.stopPropagation();deleteReport(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function viewReport(i) {
+  const r = savedReports[i];
+  currentModalReport = r;
+  document.getElementById('modal-title').textContent = r.type + ' — ' + r.source;
+  document.getElementById('modal-body').innerHTML = renderMd(escHtml(r.content));
+  document.getElementById('modal-meta').textContent = new Date(r.date).toLocaleString('en-GB');
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+function deleteReport(i) {
+  if (!confirm('Delete this report?')) return;
+  savedReports.splice(i, 1);
+  localStorage.setItem('ethmar_reports', JSON.stringify(savedReports));
+  renderSaved();
+}
+
+// ─── HTML EXPORT ──────────────────────────────────────────────────────────────
+function buildReportHTML(title, content, meta) {
+  const now = new Date().toLocaleString('en-GB');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escHtmlAttr(title)} — Ethmar Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050e0b;color:#d8ede6;font-family:'DM Sans',sans-serif;padding:0;min-height:100vh}
+.cover{background:linear-gradient(135deg,#060f0b,#0a1a14);border-bottom:2px solid #C9A84C44;padding:40px 48px 32px;display:flex;align-items:flex-start;gap:20px}
+.cover-logo{font-family:'Cormorant Garamond',serif;color:#C9A84C;font-size:28px;letter-spacing:.1em;line-height:1}
+.cover-sub{color:#2d5547;font-size:9px;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.cover-divider{width:1px;background:#C9A84C33;align-self:stretch;margin:0 8px}
+.cover-title h1{font-family:'Cormorant Garamond',serif;font-size:24px;color:#C9A84C;margin-bottom:6px}
+.cover-title .meta{font-size:10px;color:#4d7a69}
+.cover-title .meta span{color:#5a8f7a;margin:0 8px}
+.body-content{padding:40px 48px;max-width:900px;margin:0 auto;font-size:13px;line-height:1.8;color:#c8e2d8}
+.body-content h1{font-family:'Cormorant Garamond',serif;font-size:26px;color:#C9A84C;margin:28px 0 12px;border-bottom:1px solid #152e26;padding-bottom:8px}
+.body-content h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:#a8c9bc;margin:22px 0 10px}
+.body-content h3{font-size:14px;font-weight:700;color:#d8ede6;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.body-content strong{color:#d8ede6}
+.body-content em{color:#7ab8a4}
+.body-content ul{padding-left:18px;margin:8px 0}
+.body-content ol{padding-left:18px;margin:8px 0}
+.body-content li{margin-bottom:5px}
+.body-content p{margin-bottom:10px}
+.body-content blockquote{border-left:3px solid #1A6B5A;padding-left:14px;color:#7ab8a4;margin:12px 0}
+.footer{border-top:1px solid #152e26;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#2d5547;margin-top:40px}
+@media print{body{background:#fff;color:#000}.cover{background:#f5f5f0;border-bottom:2px solid #1A6B5A}.cover-logo{color:#1A6B5A}.cover-title h1{color:#1A6B5A}.body-content{color:#1a1a1a}}
+</style>
+</head>
+<body>
+<div class="cover">
+  <div>
+    <div class="cover-logo">ETHMAR</div>
+    <div class="cover-sub">Intelligence Report</div>
+  </div>
+  <div class="cover-divider"></div>
+  <div class="cover-title">
+    <h1>${escHtml(title)}</h1>
+    <div class="meta">Generated: ${now}<span>|</span>${escHtml(meta || '')}</div>
+  </div>
+</div>
+<div class="body-content">
+${renderMdForExport(content)}
+</div>
+<div class="footer">
+  <span>ETHMAR AI Intelligence Hub · Confidential</span>
+  <span>Generated: ${now}</span>
+  <span>Nazim Khalil — CEO Ethmar</span>
+</div>
+</body>
+</html>`;
+}
+
+function downloadHTML(filename, htmlContent) {
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportReportHTML() {
+  if (!lastReport) { alert('Generate a report first.'); return; }
+  const title = document.getElementById('ro-title').textContent;
+  const html = buildReportHTML(title, lastReport.content, lastReport.source);
+  downloadHTML('ethmar-report-' + Date.now() + '.html', html);
+}
+
+function exportSavedHTML(i) {
+  const r = savedReports[i];
+  const title = r.type + ' — ' + r.source;
+  const html = buildReportHTML(title, r.content, new Date(r.date).toLocaleString('en-GB'));
+  downloadHTML('ethmar-' + r.type.replace(/\s/g,'-').toLowerCase() + '-' + i + '.html', html);
+}
+
+function exportModalHTML() {
+  if (!currentModalReport) return;
+  const r = currentModalReport;
+  const title = r.type + ' — ' + r.source;
+  const html = buildReportHTML(title, r.content, new Date(r.date).toLocaleString('en-GB'));
+  downloadHTML('ethmar-report-' + Date.now() + '.html', html);
+}
+
+function exportAllReportsHTML() {
+  if (!savedReports.length) { alert('No saved reports to export.'); return; }
+  savedReports.forEach((r, i) => {
+    setTimeout(() => {
+      const title = r.type + ' — ' + r.source;
+      const html = buildReportHTML(title, r.content, new Date(r.date).toLocaleString('en-GB'));
+      downloadHTML('ethmar-' + r.type.replace(/\s/g,'-').toLowerCase() + '-' + i + '.html', html);
+    }, i * 300);
+  });
+}
+
+function exportChatHTML() {
+  if (!currentAgent) return;
+  const agent = AGENTS.find(a => a.id === currentAgent);
+  const msgs = histsByAgent[currentAgent] || [];
+  const title = agent ? agent.title : currentAgent;
+  let content = msgs.map(m => {
+    const isUser = m.role === 'user';
+    const time = m.created_at ? new Date(m.created_at).toLocaleString('en-GB') : '';
+    const name = isUser ? 'Nazim' : title;
+    return `**[${time}] ${name}:**\n\n${m.content || ''}`;
+  }).join('\n\n---\n\n');
+  const html = buildReportHTML(title + ' — Conversation Log', content, msgs.length + ' messages');
+  downloadHTML('ethmar-chat-' + currentAgent + '-' + Date.now() + '.html', html);
+}
+
+function copyReport() {
+  if (!lastReport) return;
+  navigator.clipboard?.writeText(lastReport.content)
+    .then(() => { document.getElementById('gen-status').textContent = '✅ Copied!'; setTimeout(() => document.getElementById('gen-status').textContent = '', 2000); })
+    .catch(() => alert('Copy failed — please select and copy manually.'));
+}
+
+function copyModal() {
+  if (!currentModalReport) return;
+  navigator.clipboard?.writeText(currentModalReport.content).then(() => alert('✅ Copied to clipboard!'));
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+function saveKeys() {
+  const claude = document.getElementById('key-claude').value.trim();
+  const sb = document.getElementById('key-sb').value.trim();
+  if (claude) { KEYS.claude = claude; localStorage.setItem('ethmar_claude_key', claude); }
+  if (sb) { KEYS.sbKey = sb; localStorage.setItem('ethmar_sb_key', sb); }
+  document.getElementById('key-status').textContent = '✅ Keys saved. Refreshing data…';
+  setTimeout(() => { refreshData(); document.getElementById('key-status').textContent = ''; }, 800);
+}
+
+function clearKeys() {
+  if (!confirm('Clear all API keys?')) return;
+  ['ethmar_claude_key', 'ethmar_sb_key'].forEach(k => localStorage.removeItem(k));
+  KEYS = { claude: '', sbKey: '' };
+  document.getElementById('key-claude').value = '';
+  document.getElementById('key-sb').value = '';
+  document.getElementById('key-status').textContent = '✅ Keys cleared.';
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('on'));
+  const sec = document.getElementById('sec-' + name);
+  if (sec) sec.classList.add('active');
+  const nav = document.querySelector(`[data-section="${name}"]`);
+  if (nav) nav.classList.add('on');
+  if (name === 'saved') renderSaved();
+}
+
+// ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escHtmlAttr(s) { return escHtml(s).replace(/'/g,'&#39;'); }
+
+function renderMd(s) {
+  // Bold, italic, headers, lists, horizontal rules — light render
+  return s
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #152e26;margin:12px 0">')
+    .replace(/^\* (.+)$/gm, '<li>$1</li>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, s => '<ul>' + s + '</ul>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/^(?!<)(.+)$/gm, '$1')
+    ;
+}
+
+function renderMdForExport(s) {
+  // Richer render for HTML export
+  const lines = s.split('\n');
+  let html = '';
+  let inList = false;
+  for (const line of lines) {
+    let l = line
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code style="background:#0f2a1e;padding:1px 4px;border-radius:3px;font-family:monospace">$1</code>');
+    if (/^### /.test(l)) { if(inList){html+='</ul>';inList=false;} html += '<h3>' + l.replace(/^### /,'') + '</h3>'; continue; }
+    if (/^## /.test(l)) { if(inList){html+='</ul>';inList=false;} html += '<h2>' + l.replace(/^## /,'') + '</h2>'; continue; }
+    if (/^# /.test(l)) { if(inList){html+='</ul>';inList=false;} html += '<h1>' + l.replace(/^# /,'') + '</h1>'; continue; }
+    if (/^([-*•▸►✅📌⏰❓⚠️📈📉🔴🟡🟢]) /.test(l) || /^\d+\. /.test(l)) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += '<li>' + l.replace(/^([-*•▸►✅📌⏰❓⚠️📈📉🔴🟡🟢]|\d+\.) /,'') + '</li>';
+      continue;
+    }
+    if (inList) { html += '</ul>'; inList = false; }
+    if (l.trim() === '' || l.trim() === '---') { html += '<br>'; continue; }
+    html += '<p>' + l + '</p>';
+  }
+  if (inList) html += '</ul>';
+  return html;
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
